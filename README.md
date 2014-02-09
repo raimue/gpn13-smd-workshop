@@ -17,4 +17,3 @@ I also wrote about this project [on my blog][4].
 [2]: http://www.atmel.com/devices/attiny9.aspx
 [3]: http://www.nxp.com/products/logic/shift_registers/series/74HC_T_595.html
 [4]: https://raim.codingfarm.de/blog/2014/02/09/tinkering-with-attiny9/
-
