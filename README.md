@@ -1,7 +1,7 @@
 AVR board from SMD workshop at GPN13
 ====================================
 
-In June 2013 I attended a workshop on SMD soldering at the [Gulaschprogrammiernacht 2013 (GPN13)][1], a German hacker event organized by the regional CCC group in Karlsruhe. The result of a workshop organized by @DrLuke was this small board with an [ATtiny9][2] microcontroller and a [74HCT595][3] shift register.
+In June 2013 I attended a workshop on SMD soldering at the [Gulaschprogrammiernacht 2013 (GPN13)][1], a German hacker event organized by the regional CCC group in Karlsruhe. The result of a workshop organized by [@DrLuke](https://github.com/DrLuke) was this small board with an [ATtiny9][2] microcontroller and a [74HCT595][3] shift register.
 
 <div align="center">
 <img src="doc/board-unpopulated-sample.jpg" height="300" />
