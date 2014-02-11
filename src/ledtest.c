@@ -42,23 +42,36 @@ void shift_init(void) {
     shift_flip();
 }
 
-void delay(void) {
-    for (uint16_t i = 0; i < 10000; i++) {
+void delay(uint16_t value) {
+    for (uint16_t i = 0; i < value; i++) {
         _delay_us(10);
     }
-    /* for (volatile uint16_t i = 0; i < 30000; i++); */
 }
 
 void main(void) {
     shift_init();
 
+    /*
+    // LED dimming
     while(1) {
-        uint16_t value = 0x01;
+        shift_load(0xff);
+        shift_flip();
+        for (volatile uint16_t i = 0; i < 1; i++);
+        shift_load(0x00);
+        shift_flip();
+        for (volatile uint16_t i = 0; i < 500; i++);
+    }
+    */
+
+    // LED sequential on/off
+    while(1) {
         for (uint8_t i = 0; i < 8; i++) {
-            shift_load(value);
-            shift_flip();
-            delay();
-            value <<= 1;
+            shift_next_flip(1);
+            delay(1000);
+        }
+        for (uint8_t i = 0; i < 8; i++) {
+            shift_next_flip(0);
+            delay(1000);
         }
     }
 }
