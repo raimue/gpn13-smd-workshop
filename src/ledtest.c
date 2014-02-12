@@ -1,4 +1,6 @@
 #include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/sleep.h>
 #include <util/delay.h>
 
 #define SHIFT_DDR  DDRB
@@ -48,8 +50,45 @@ void delay(uint16_t value) {
     }
 }
 
+void timer_init(void) {
+    /* prescaler 1/64 */
+    TCCR0B &= ~(1 << CS02);
+    TCCR0B |=  (1 << CS01);
+    TCCR0B |=  (1 << CS00);
+
+    /* compare mode: count up, interrupt on A */
+    TCCR0A &= ~((1 << WGM01) | (1 << WGM00));
+    TCCR0B &= ~(1 << WGM03);
+    TCCR0B |=  (1 << WGM02);
+
+    /* reset counter */
+    OCR0A = 15625; /* 1 s */
+    OCR0A =  3125; /* 200 ms */
+    TCNT0 = 0;
+
+    /* enable interrupt on overflow */
+    TIMSK0 |= (1 << OCIE0A);
+}
+
+inline uint8_t reverse(uint8_t x) {
+    x = ((x >> 1) & 0x55) | ((x << 1) & 0xaa);
+    x = ((x >> 2) & 0x33) | ((x << 2) & 0xcc);
+    x = ((x >> 4) & 0x0f) | ((x << 4) & 0xf0);
+    return x;
+}
+
+ISR(TIM0_COMPA_vect) {
+    static uint8_t x = 0;
+    shift_load(reverse(x));
+    shift_flip();
+    x++;
+}
+
 void main(void) {
     shift_init();
+    timer_init();
+
+    sei();
 
     /*
     // LED dimming
@@ -63,6 +102,7 @@ void main(void) {
     }
     */
 
+    /*
     // LED sequential on/off
     while(1) {
         for (uint8_t i = 0; i < 8; i++) {
@@ -73,5 +113,19 @@ void main(void) {
             shift_next_flip(0);
             delay(1000);
         }
+    }
+    */
+
+    // Do nothing, just sleep and wait for interrupts
+    while(1) {
+        sleep_enable();
+        cli();
+        while (1) {
+            sei();
+            sleep_cpu();
+            cli();
+        }
+        sei();
+        sleep_disable();
     }
 }
