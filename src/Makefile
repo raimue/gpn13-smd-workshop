@@ -1,4 +1,4 @@
-.PHONY: all clean flash gdbstub
+.PHONY: all clean dump flash gdbstub
 
 # Target file name without file extension
 TARGET  = ledtest
@@ -7,7 +7,9 @@ TARGET  = ledtest
 CC      = avr-gcc
 SIZE    = avr-size
 OBJCOPY = avr-objcopy
+OBJDUMP = avr-objdump
 GDB     = avr-gdb
+EDITOR ?= vim
 
 # AVR Tools for flashing and debugging
 AVARICE = avarice
@@ -61,6 +63,8 @@ all: $(TARGET).hex
 
 flash: $(TARGET).hex.flash
 
+dump: $(TARGET).elf.dump
+
 # Target for flashing an Intel hex image
 %.hex.flash: %.hex
 	$(AVRDUDE) $(ISPDEV) $(ISPBCLK) -p $(MCU) -U flash:w:$<
@@ -102,6 +106,12 @@ gdbstub:
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 	$(SIZE) $@
 
+%.elf.dump: %.elf
+	$(OBJDUMP) -d $< > $(<:.elf=.objdump)
+	$(EDITOR) $(<:.elf=.objdump)
+
+%.dump: %.elf.dump
+
 clean:
 	$(RM) $(TARGET).hex
 	$(RM) $(TARGET).eep
@@ -115,3 +125,4 @@ clean:
 	$(RM) $(TARGET).lnk
 	$(RM) $(TARGET).lss
 	$(RM) $(TARGET).o
+	$(RM) $(TARGET).objdump
