@@ -129,3 +129,7 @@ clean:
 	$(RM) $(TARGET).lss
 	$(RM) $(TARGET).o
 	$(RM) $(TARGET).objdump
+
+
+# Dependencies
+ledtest.elf: ledtest.o shift.o
