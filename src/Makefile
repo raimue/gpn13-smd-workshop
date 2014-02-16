@@ -52,11 +52,11 @@ CFLAGS += -ffreestanding
 CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 # Warning: this might break linkage of additional files
 #CFLAGS += -fwhole-program
-CFLAGS += -Wall -Werror
+CFLAGS += -Wall #-Werror
 
 # Use appropriate flags for debugging or for optimized code
 #OPT = -g -O0
-OPT = -Os
+OPT = -Os -flto
 CFLAGS += $(OPT)
 
 all: $(TARGET).hex
@@ -102,9 +102,12 @@ gdbstub:
 %.hex: %.elf
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
 
-%.elf: %.c
+%.elf: %.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 	$(SIZE) $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $^
 
 %.elf.dump: %.elf
 	$(OBJDUMP) -d $< > $(<:.elf=.objdump)
