@@ -5,6 +5,7 @@
 
 #include "hwconfig.h"
 #include "shift.h"
+#include "util.h"
 
 void delay(uint16_t value) {
     for (uint16_t i = 0; i < value; i++) {
@@ -32,16 +33,9 @@ void timer_init(void) {
     TIMSK0 |= (1 << OCIE0A);
 }
 
-inline uint8_t reverse(uint8_t x) {
-    x = ((x >> 1) & 0x55) | ((x << 1) & 0xaa);
-    x = ((x >> 2) & 0x33) | ((x << 2) & 0xcc);
-    x = ((x >> 4) & 0x0f) | ((x << 4) & 0xf0);
-    return x;
-}
-
 ISR(TIM0_COMPA_vect) {
     static uint8_t x = 0;
-    shift_load(reverse(x));
+    shift_load(reverse8(x));
     shift_flip();
     x++;
 }
