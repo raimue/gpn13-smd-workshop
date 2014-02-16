@@ -24,7 +24,7 @@ void timer_init(void) {
     TCCR0B |=  (1 << WGM02);
 
     /* reset counter */
-    OCR0A = 15625; /* 1 s */
+    //OCR0A = 15625; /* 1 s */
     OCR0A =  3125; /* 200 ms */
     TCNT0 = 0;
 
