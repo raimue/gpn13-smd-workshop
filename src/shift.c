@@ -36,3 +36,8 @@ void shift_next_flip(uint8_t value) {
     shift_next(value);
     shift_flip();
 }
+
+void shift_set(uint8_t value) {
+    shift_load(value);
+    shift_flip();
+}
